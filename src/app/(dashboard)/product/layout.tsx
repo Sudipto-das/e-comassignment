@@ -1,56 +1,55 @@
 'use client'
-import { useRecoilState } from "recoil"
-import Filter from "../../(components)/filter"
-import { useEffect, useState } from "react"
-import { productState } from "@/store/product"
-import axios from "axios"
-import ProductPage from "./page"
+import { productState } from "@/store/product";
+import { useEffect, useState } from "react";
 
-export default function ProductLayout({
-    children, // will be a page or nested layout
-}: {
-    children: React.ReactNode
-}) {
-    const [products, setProducts] = useRecoilState(productState)
-    const [selectedCategories, setSelectedCategories] = useState<string[]>([])
-    const [selectedPrices, setSelectedPrices] = useState<string[]>([])
-    const [isFilterOpen, setIsFilterOpen] = useState(false)
+import { useRecoilState, useSetRecoilState } from "recoil";
+import Filter from "../../(components)/filter";
+import ProductComponent from "./page"; // Updated import
+import axios from "axios";
+import { selectedCategoryState, selectedPriceState } from "@/store/filter";
+
+export default function ProductLayout() {
+    const  setProducts = useSetRecoilState(productState);
+    const [selectedCategories, setSelectedCategories] = useRecoilState(selectedCategoryState)
+    const [selectedPrices, setSelectedPrices] = useRecoilState(selectedPriceState)
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
 
     const fetchProducts = async () => {
-        const response = await axios.get('https://fakestoreapi.com/products')
-        if (response.status === 200) {
-            const data = response.data
-            setProducts(data)
+        try {
+            const response = await axios.get('https://fakestoreapi.com/products');
+            if (response.status === 200) {
+                const data = response.data;
+                setProducts(data);
+            }
+        } catch (error) {
+            console.error("Error fetching products:", error);
         }
-    }
+    };
 
     useEffect(() => {
-        fetchProducts()
-    }, [])
+        fetchProducts();
+    }, []);
 
     const handleCategoryChange = (category: string) => {
         setSelectedCategories(prevSelectedCategories =>
             prevSelectedCategories.includes(category)
                 ? prevSelectedCategories.filter(cat => cat !== category)
                 : [...prevSelectedCategories, category]
-        )
-    }
+        );
+    };
 
     const handlePriceChange = (price: string) => {
         setSelectedPrices(prevSelectedPrice =>
             prevSelectedPrice.includes(price)
                 ? prevSelectedPrice.filter(item => item !== price)
                 : [...prevSelectedPrice, price]
-        )
-    }
+        );
+    };
 
     const toggleFilter = () => {
-        setIsFilterOpen(!isFilterOpen)
-    }
-    const closeFilter = ()=>{
-        setIsFilterOpen(false)
-    }
-
+        setIsFilterOpen(!isFilterOpen);
+    };
+    
     return (
         <section className="relative">
             <div className="flex mt-10">
@@ -84,13 +83,10 @@ export default function ProductLayout({
 
                 {/* Product page */}
                 <div className="w-full md:w-[80%] md:ml-[18%] mt-14">
-                    <ProductPage
-                        products={products}
-                        selectedCategories={selectedCategories}
-                        selectedPrices={selectedPrices}
-                    />
+                    {/* Pass selectedCategories and selectedPrices as props */}
+                    <ProductComponent/>
                 </div>
             </div>
         </section>
-    )
+    );
 }

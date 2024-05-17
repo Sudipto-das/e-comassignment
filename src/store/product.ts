@@ -1,13 +1,13 @@
 import { atom } from "recoil"
 
-export interface Product {
+ export interface Product {
     id: string,
     title: string,
     description: string,
     price: number,
     category:string,
     image:string,
-    rating: {
+    rating?: {
         count: number,
         rate: number
     }

@@ -1,47 +1,47 @@
 'use client'
+import { Product, productState } from "@/store/product";
+import { useState } from "react";
+import DetailsPage from "../../(components)/details";
+import { useRecoilValue } from "recoil";
+import { selectedCategoryState, selectedPriceState } from "@/store/filter";
 
-import { Product } from "@/store/product"
-import { useState } from "react"
-import DetailsPage from "../../(components)/details"
 
 
-interface ProductPageProps {
-    products: Product[]
-    selectedCategories: string[]
-    selectedPrices: string[]
-}
-
-const ProductPage = ({ products, selectedCategories, selectedPrices }: ProductPageProps) => {
-    const [searchTerm, setSearchTerm] = useState('')
-    const [showModal, setShowModal] = useState(false)
+const ProductComponent = () => {
+    const selectedPrices = useRecoilValue(selectedPriceState)
+    const selectedCategories = useRecoilValue(selectedCategoryState)
+    const products = useRecoilValue(productState)
+    const [searchTerm, setSearchTerm] = useState('');
+    const [showModal, setShowModal] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+    
     const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(event.target.value);
     };
-    const handleViewDetails = (productId: string) => {
-        const item = products.find((product => product.id === productId))
-        if (item) {
-            setSelectedProduct(item)
-            setShowModal(true)
-        }
 
-    }
+    const handleViewDetails = (productId: string) => {
+        const item = products.find((product) => product.id === productId);
+        if (item) {
+            setSelectedProduct(item);
+            setShowModal(true);
+        }
+    };
 
     const filterProducts = (products: Product[]) => {
         return products.filter(product => {
-            const categoryMatch = selectedCategories.length === 0 || selectedCategories.includes(product.category)
+            const categoryMatch = selectedCategories.length === 0 || selectedCategories.includes(product.category);
             const priceMatch = selectedPrices.length === 0 || selectedPrices.some(priceRange => {
-                const [min, max] = priceRange.split(' - ').map(Number)
-                return product.price >= min && product.price <= max
-            })
+                const [min, max] = priceRange.split(' - ').map(Number);
+                return product.price >= min && product.price <= max;
+            });
             const searchMatch = searchTerm.length === 0 ||
                 product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 product.description.toLowerCase().includes(searchTerm.toLowerCase());
-            return categoryMatch && priceMatch && searchMatch
-        })
-    }
+            return categoryMatch && priceMatch && searchMatch;
+        });
+    };
 
-    const filteredProducts = filterProducts(products)
+    const filteredProducts = filterProducts(products);
 
     return (
         <div className="px-6">
@@ -64,14 +64,14 @@ const ProductPage = ({ products, selectedCategories, selectedPrices }: ProductPa
                         <p className="text-yellow-500">Rating: {product.rating?.rate ?? "N/A"}</p>
                         <div className="flex gap-5">
                             <button className="mt-2 px-4 py-2 bg-blue-500 text-white rounded">Add to cart</button>
-                            <button className="mt-2 px-4 py-2 bg-purple-300  text-black rounded" onClick={() => handleViewDetails(product.id)}>View Details</button>
+                            <button className="mt-2 px-4 py-2 bg-purple-300 text-black rounded" onClick={() => handleViewDetails(product.id)}>View Details</button>
                         </div>
                     </div>
                 ))}
             </div>
             {showModal && <DetailsPage selectedProduct={selectedProduct} onClose={() => setShowModal(false)} />}
         </div>
-    )
-}
+    );
+};
 
-export default ProductPage
+export default ProductComponent;
