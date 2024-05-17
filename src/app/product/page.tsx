@@ -2,6 +2,8 @@
 
 import { Product } from "@/store/product"
 import { useState } from "react"
+import DetailsPage from "../(components)/details"
+
 
 interface ProductPageProps {
     products: Product[]
@@ -11,9 +13,20 @@ interface ProductPageProps {
 
 const ProductPage = ({ products, selectedCategories, selectedPrices }: ProductPageProps) => {
     const [searchTerm, setSearchTerm] = useState('')
+    const [showModal, setShowModal] = useState(false)
+    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(event.target.value);
     };
+    const handleViewDetails = (productId: string) => {
+        const item = products.find((product => product.id === productId))
+        if (item) {
+            setSelectedProduct(item)
+            setShowModal(true)
+        }
+
+    }
+
     const filterProducts = (products: Product[]) => {
         return products.filter(product => {
             const categoryMatch = selectedCategories.length === 0 || selectedCategories.includes(product.category)
@@ -21,7 +34,7 @@ const ProductPage = ({ products, selectedCategories, selectedPrices }: ProductPa
                 const [min, max] = priceRange.split(' - ').map(Number)
                 return product.price >= min && product.price <= max
             })
-            const searchMatch = searchTerm.length === 0 || 
+            const searchMatch = searchTerm.length === 0 ||
                 product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 product.description.toLowerCase().includes(searchTerm.toLowerCase());
             return categoryMatch && priceMatch && searchMatch
@@ -49,10 +62,14 @@ const ProductPage = ({ products, selectedCategories, selectedPrices }: ProductPa
                         <h2 className="text-lg font-semibold">{product.title}</h2>
                         <p className="text-gray-700">{product.price}₹</p>
                         <p className="text-yellow-500">Rating: {product.rating?.rate ?? "N/A"}</p>
-                        <button className="mt-2 px-4 py-2 bg-blue-500 text-white rounded">Add to cart</button>
+                        <div className="flex gap-5">
+                            <button className="mt-2 px-4 py-2 bg-blue-500 text-white rounded">Add to cart</button>
+                            <button className="mt-2 px-4 py-2 bg-purple-300  text-black rounded" onClick={() => handleViewDetails(product.id)}>View Details</button>
+                        </div>
                     </div>
                 ))}
             </div>
+            {showModal && <DetailsPage selectedProduct={selectedProduct} onClose={() => setShowModal(false)} />}
         </div>
     )
 }
