@@ -1,7 +1,6 @@
 'use client'
 import { useRecoilState } from "recoil"
 import Filter from "../../(components)/filter"
-import Navber from "../../(components)/navber"
 import { useEffect, useState } from "react"
 import { productState } from "@/store/product"
 import axios from "axios"

@@ -1,5 +1,4 @@
 import { Product } from "@/store/product";
-import { useState } from "react";
 
 interface DetailsPageProps {
     onClose: () => void;
