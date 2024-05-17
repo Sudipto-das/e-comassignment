@@ -46,7 +46,7 @@ export default function ProductLayout({
                 <Navber />
             </div>
             <div className="flex mt-10 ">
-                <div className="w-[20%] border-r-2 fixed min-h-screen top-24">
+                <div className="w-[15%] border-r-2 fixed min-h-screen top-24">
                     <Filter
                         selectedCategories={selectedCategories}
                         onCategoryChange={handleCategoryChange}
@@ -54,7 +54,7 @@ export default function ProductLayout({
                         onPriceChange={handlePriceChange}
                     />
                 </div>
-                <div className="w-[80%] absolute left-[20%] top-14">
+                <div className="w-[80%] absolute left-[18%] top-14">
                     <ProductPage
                         products={products}
                         selectedCategories={selectedCategories}
