@@ -11,10 +11,10 @@ const Navbar: React.FC = () => {
             <a href="#" className="text-white text-md font-semibold hover:text-gray-300">
               Home
             </a>
-            <a href="#" className="text-white text-md font-semibold hover:text-gray-300">
+            <a href="/product" className="text-white text-md font-semibold hover:text-gray-300">
               Products
             </a>
-            <a href="#" className="text-white text-md font-semibold hover:text-gray-300">
+            <a href="/cart" className="text-white text-md font-semibold hover:text-gray-300">
               Cart
             </a>
           </div>

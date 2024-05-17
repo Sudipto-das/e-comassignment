@@ -2,7 +2,7 @@
 
 import { Product } from "@/store/product"
 import { useState } from "react"
-import DetailsPage from "../(components)/details"
+import DetailsPage from "../../(components)/details"
 
 
 interface ProductPageProps {
@@ -45,7 +45,7 @@ const ProductPage = ({ products, selectedCategories, selectedPrices }: ProductPa
 
     return (
         <div className="px-6">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col md:flex-row justify-between items-center mb-2">
                 <h1 className="font-bold text-2xl mb-4">Product List ({filteredProducts.length})</h1>
                 <input
                     type="text"

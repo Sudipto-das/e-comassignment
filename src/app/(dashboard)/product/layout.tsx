@@ -1,7 +1,7 @@
 'use client'
 import { useRecoilState } from "recoil"
-import Filter from "../(components)/filter"
-import Navber from "../(components)/navber"
+import Filter from "../../(components)/filter"
+import Navber from "../../(components)/navber"
 import { useEffect, useState } from "react"
 import { productState } from "@/store/product"
 import axios from "axios"
@@ -15,6 +15,8 @@ export default function ProductLayout({
     const [products, setProducts] = useRecoilState(productState)
     const [selectedCategories, setSelectedCategories] = useState<string[]>([])
     const [selectedPrices, setSelectedPrices] = useState<string[]>([])
+    const [isFilterOpen, setIsFilterOpen] = useState(false)
+
     const fetchProducts = async () => {
         const response = await axios.get('https://fakestoreapi.com/products')
         if (response.status === 200) {
@@ -22,6 +24,7 @@ export default function ProductLayout({
             setProducts(data)
         }
     }
+
     useEffect(() => {
         fetchProducts()
     }, [])
@@ -33,6 +36,7 @@ export default function ProductLayout({
                 : [...prevSelectedCategories, category]
         )
     }
+
     const handlePriceChange = (price: string) => {
         setSelectedPrices(prevSelectedPrice =>
             prevSelectedPrice.includes(price)
@@ -40,13 +44,37 @@ export default function ProductLayout({
                 : [...prevSelectedPrice, price]
         )
     }
+
+    const toggleFilter = () => {
+        setIsFilterOpen(!isFilterOpen)
+    }
+    const closeFilter = ()=>{
+        setIsFilterOpen(false)
+    }
+
     return (
         <section className="relative">
-            <div className="fixed w-full top-0 z-10">
-                <Navber />
-            </div>
-            <div className="flex mt-10 ">
-                <div className="w-[15%] border-r-2 fixed min-h-screen top-24">
+            <div className="flex mt-10">
+                {/* Filter button for small devices */}
+                <button
+                    className="md:hidden fixed top-24 left-4 z-10 bg-violet-500 text-white px-3 py-1 rounded"
+                    onClick={toggleFilter}
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-menu"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+                </button>
+
+                {/* Filter sidebar */}
+                <div
+                    className={`fixed top-24 left-0 z-20 w-full md:w-[15%] border-r-2 bg-white min-h-screen transition-transform duration-300 ease-in-out transform ${
+                        isFilterOpen ? 'translate-x-0' : '-translate-x-full'
+                    } md:translate-x-0`}
+                >
+                     <button
+                        className="md:hidden absolute top-8 right-4 bg-violet-500 text-white px-2 py-1 rounded"
+                        onClick={toggleFilter}
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+                    </button>
                     <Filter
                         selectedCategories={selectedCategories}
                         onCategoryChange={handleCategoryChange}
@@ -54,16 +82,16 @@ export default function ProductLayout({
                         onPriceChange={handlePriceChange}
                     />
                 </div>
-                <div className="w-[80%] absolute left-[18%] top-14">
+
+                {/* Product page */}
+                <div className="w-full md:w-[80%] md:ml-[18%] mt-14">
                     <ProductPage
                         products={products}
                         selectedCategories={selectedCategories}
                         selectedPrices={selectedPrices}
                     />
                 </div>
-
             </div>
-
         </section>
     )
 }
