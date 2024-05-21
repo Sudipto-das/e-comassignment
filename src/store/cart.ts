@@ -14,7 +14,15 @@ import { atom } from "recoil"
     item_count:number
 }
 
+const getCartItems = (): cartItem[] => {
+    if (typeof window !== "undefined") { // Check if window is defined (i.e., running in the browser)
+        const storedCart = localStorage.getItem('cartItem');
+        return storedCart ? JSON.parse(storedCart) : [];
+    }
+    return [];
+}
+
 export const cartItemState = atom <cartItem[]>({
     key:'cartItemState',
-    default: JSON.parse(localStorage.getItem('cartItem') || '[]'),
+    default: getCartItems()
 })
