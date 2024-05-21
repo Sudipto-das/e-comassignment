@@ -22,7 +22,7 @@ const CartPage: React.FC = () => {
   return (
     <div className="container mx-auto p-8">
       <h1 className="text-3xl font-bold mb-8">Shopping Cart</h1>
-      {cartItems.length === 0 && <div className='flex items-center justify-center'> haven't any cart item </div>}
+      {cartItems.length === 0 && <div className='flex items-center justify-center font bold text-lg'> Cart is Empty</div>}
       {cartItems.length > 0 && <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div>
           {cartItems.map((item) => (
